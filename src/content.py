@@ -9,9 +9,9 @@ Methods: get_random_quote() -> (str, str), get_weather_forecast() -> RET,
 """
 from random import randint, choice
 from string import punctuation
+import json
 import requests
 from bs4 import BeautifulSoup
-import json
 
 
 def get_random_quote():
