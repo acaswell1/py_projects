@@ -4,15 +4,12 @@ data needed to aquire the different type of content to be
 included in the newsletter.
 
 Methods: get_random_quote() -> (str, str), get_weather_forecast() -> RET,
-
-
 """
 from random import randint, choice
 from string import punctuation
 import json
 import requests
 from bs4 import BeautifulSoup
-
 
 def get_random_quote():
     """
@@ -39,7 +36,6 @@ def get_random_quote():
 
     author, quote = choice(list(quote_dictionary.items()))
     return quote, author
-
 
 def get_weather_forecast():
     """ 
@@ -69,7 +65,6 @@ def get_weather_forecast():
     weather_data = json.loads(response.text)
 
     return weather_data
-
 
 if __name__ == '__main__':
     print(get_weather_forecast())
