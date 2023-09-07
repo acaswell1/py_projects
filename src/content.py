@@ -11,6 +11,7 @@ from random import randint, choice
 from string import punctuation
 import requests
 from bs4 import BeautifulSoup
+import json
 
 
 def get_random_quote():
@@ -39,11 +40,36 @@ def get_random_quote():
     author, quote = choice(list(quote_dictionary.items()))
     return quote, author
 
+
 def get_weather_forecast():
     """ 
     Get today's weather forecast using OpenWeatherAPI
     """
 
+    key_reader = open("src/OpWthr_Key.txt", 'r', encoding='utf-8')
+    key = key_reader.read().strip()
+
+    zip_code = 85701
+    country_code = "US"
+
+    params = f'zip?zip={zip_code},{country_code}&appid={key}'
+
+    response = requests.get(
+        f'http://api.openweathermap.org/geo/1.0/{params}', timeout=10)
+
+    location_data = json.loads(response.text)
+    lat = location_data['lat']
+    lon = location_data['lon']
+
+    params = f'weather?lat={lat}&lon={lon}&units=imperial&appid={key}'
+
+    response = requests.get(
+        f'https://api.openweathermap.org/data/2.5/{params}', timeout=10)
+
+    weather_data = json.loads(response.text)
+
+    return weather_data
+
+
 if __name__ == '__main__':
-    print(get_random_quote())
-    get_weather_forecast()
+    print(get_weather_forecast())
