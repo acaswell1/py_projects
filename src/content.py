@@ -6,7 +6,7 @@ included in the newsletter.
 Methods: get_random_quote() -> str, 
 
 """
-import random
+from random import randint, choice
 from string import punctuation
 import requests
 from bs4 import BeautifulSoup
@@ -17,8 +17,10 @@ def get_random_quote():
     This method scrapes a random inspirational quote from www.goodreads.com to
     include in the newsletter
     """
+    page_number = randint(1, 69000)
+
     response = requests.get(
-        'https://www.goodreads.com/quotes/tag/inspirational', timeout=30)
+        f'https://www.goodreads.com/quotes/tag/inspirational?page={page_number}', timeout=30)
 
     soup = BeautifulSoup(response.text, features="html.parser")
     quotes = soup.find_all('div', class_='quoteText')
@@ -33,8 +35,8 @@ def get_random_quote():
         quote_dictionary[split_quote_and_author[1].strip(
         )] = split_quote_and_author[0].strip()
 
-    author, quote = random.choice(list(quote_dictionary.items()))
+    author, quote = choice(list(quote_dictionary.items()))
     return quote, author
 
 if __name__ == '__main__':
-    get_random_quote()
+    print(get_random_quote())
