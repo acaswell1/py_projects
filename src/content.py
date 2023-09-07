@@ -3,7 +3,8 @@ The following module contains the methods which will fetch the
 data needed to aquire the different type of content to be 
 included in the newsletter.
 
-Methods: get_random_quote() -> str, 
+Methods: get_random_quote() -> (str, str), get_weather_forecast() -> RET,
+
 
 """
 from random import randint, choice
@@ -38,5 +39,11 @@ def get_random_quote():
     author, quote = choice(list(quote_dictionary.items()))
     return quote, author
 
+def get_weather_forecast():
+    """ 
+    Get today's weather forecast using OpenWeatherAPI
+    """
+
 if __name__ == '__main__':
     print(get_random_quote())
+    get_weather_forecast()
