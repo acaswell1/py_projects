@@ -12,7 +12,7 @@ from content import get_wikipedia_article as article
 
 
 class DailyDigestEmail:
-    """ Test """
+    """ Class used to format and send an email """
 
     def __init__(self):
         self.email_content = {'quote': quote(),
