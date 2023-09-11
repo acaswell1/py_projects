@@ -25,7 +25,7 @@ def get_random_quote():
     page_number = randint(1, 100)
 
     response = requests.get(
-        f'https://www.goodreads.com/quotes/tag/inspirational?page={page_number}', timeout=30)
+        f'https://www.goodreads.com/quotes/tag/inspirational?page={page_number}', timeout=60)
 
     soup = BeautifulSoup(response.text, features="html.parser")
     quotes = soup.find_all('div', class_='quoteText')

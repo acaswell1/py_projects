@@ -3,6 +3,8 @@ Class which allow us to buld and send an email with our daily digest information
 """
 
 import datetime
+from email.message import EmailMessage
+from smtplib import SMTP
 from bs4 import BeautifulSoup
 from content import get_random_quote as quote
 from content import get_weather_forecast as forecast
@@ -17,14 +19,28 @@ class DailyDigestEmail:
                               'forecast': forecast(),
                               'article': article()}
         self.email = None
+        self.recipients = ['aleccaswell@gmail.com']
+        self.sender_cerdentials = { 'email':'aleccaswell@outlook.com',
+                                   'password': open("src/Email_pwd.txt", 'r', encoding='utf-8').read().strip()}
 
     def send_email(self):
-        """ Test """
-        if (email := self.email):
-            print(email['plain'])
-            print(email['html'])
-        else:
-            print("Formatted email does not exist")
+        """ 
+        Send the email
+        """
+        message = EmailMessage()
+        message['Subject'] = f'Alec\'s Daily Digest - {datetime.date.today().strftime("%d %b %Y")}'
+        message['From'] = self.sender_cerdentials['email']
+        message['To'] = 'aleccaswell@gmail.com'
+        
+        self.format_message()
+        message.set_content(self.email['plain'])
+        message.add_alternative(self.email['html'], subtype='html')
+
+        with SMTP('smtp.office365.com', 587) as server:
+            server.starttls()
+            server.login(self.sender_cerdentials['email'],
+                            self.sender_cerdentials['password'])
+            server.send_message(message)
 
     def format_message(self):
         """
@@ -58,25 +74,25 @@ class DailyDigestEmail:
         html_msg = f"""
         <html>
         <head></head>
-        <body>
+        <body style="background-color:lightblue;">
             <div style="text-align:center;">  
                 <h1>Daily Digest - {datetime.date.today().strftime("%d %b %Y")}</h1>
                 <h3>Today's Quote</h3>
-                <p>"{body}" -{author}</p>
+                <p><i>"{body}"</i> -{author}</p>
             </div>
             <div id="contentcols"  style="margin:0px auto; width:70%">
                 <div id="weathercol" style="float:left; margin:0; width:50%;">
                     <h3>Today's Weather</h3>
                     <p>Weather forecast for {forecast_content["city"]}, {forecast_content["country"]} is....</p>
-                    <p>{weather[0]}</p>
-                    <p>{weather[1]}</p>
-                    <p>{weather[2]}</p>
-                    <p>{weather[3]}</p>
-                    <p>{weather[4]}</p>
-                    <p>{weather[5]}</p>
-                    <p>{weather[6]}</p>
-                    <p>{weather[7]}</p>
-                    <p>{weather[8]}</p>
+                    <p>{weather[0][1:]}</p>
+                    <p>{weather[1][1:]}</p>
+                    <p>{weather[2][1:]}</p>
+                    <p>{weather[3][1:]}</p>
+                    <p>{weather[4][1:]}</p>
+                    <p>{weather[5][1:]}</p>
+                    <p>{weather[6][1:]}</p>
+                    <p>{weather[7][1:]}</p>
+                    <p>{weather[8][1:]}</p>
                 </div>
                 <div id="articlecol" style="float:left; margin:0; width:50%;">
                     <h3>Today's Article</h3>
@@ -96,6 +112,4 @@ class DailyDigestEmail:
 
 if __name__ == '__main__':
     digest = DailyDigestEmail()
-    digest.send_email()
-    digest.format_message()
     digest.send_email()
