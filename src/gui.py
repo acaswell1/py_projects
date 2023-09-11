@@ -1,6 +1,7 @@
 """TEST IMPLEMENTATION"""
 from tkinter import Tk
 
+
 class DailyDigestGUI:
     """
     The GUI should enable the admin to..
