@@ -3,7 +3,10 @@ The following module contains the methods which will fetch the
 data needed to aquire the different type of content to be 
 included in the newsletter.
 
-Methods: get_random_quote() -> (str, str), get_weather_forecast() -> RET,
+Methods: get_random_quote() -> (str, str),
+get_weather_forecast(zip_code, country_code) -> {city, country, periods},
+get_current_x_trends(woeid) -> void,
+def get_wikipedia_article() -> {Title, Summary, Link, Thumbnail}
 """
 from random import randint, choice
 from string import punctuation
@@ -19,7 +22,7 @@ def get_random_quote():
     This method scrapes a random inspirational quote from www.goodreads.com to
     include in the newsletter
     """
-    page_number = randint(1, 69000)
+    page_number = randint(1, 100)
 
     response = requests.get(
         f'https://www.goodreads.com/quotes/tag/inspirational?page={page_number}', timeout=30)
@@ -37,8 +40,10 @@ def get_random_quote():
         quote_dictionary[split_quote_and_author[1].strip(
         )] = split_quote_and_author[0].strip()
 
-    author, quote = choice(list(quote_dictionary.items()))
+    list_quotes = list(quote_dictionary.items())
+    author, quote = choice(list_quotes)
     return quote, author
+
 
 def get_weather_forecast(zip_code=85701, country_code="US"):
     """ 
@@ -83,6 +88,7 @@ def get_weather_forecast(zip_code=85701, country_code="US"):
     except ConnectionError as error:
         print(error)
 
+
 def get_current_x_trends(woeid=23424977):
     """
     Retrieve the top tending articles from the X api
@@ -97,8 +103,38 @@ def get_current_x_trends(woeid=23424977):
         _ = tweepy.AppAuthHandler(key, secret)
         # Elon made the twitter API cost $100 a month so I'm not paying that
         # return tweepy.API(auth=authentication).get_place_trends(woeid)[0]['trends']
-    except TypeError as error:
+    except TypeError as _:
+        print(woeid)
+
+
+def get_wikipedia_article():
+    """
+    Get a random article from Wikipedia
+    """
+    url = 'https://en.wikipedia.org/api/rest_v1/page/random/summary'
+
+    try:
+        response = requests.get(url, timeout=20)
+        article_json = json.loads(response.text)
+
+        article = {'Title': article_json["title"],
+                   'Summary': article_json["extract"],
+                   'Link': article_json["content_urls"]["desktop"]["page"],
+                   'Thumbnail': article_json["thumbnail"]["source"]}
+        return article
+    except ConnectionError as error:
         print(error)
+
+
+def test_get_random_quote():
+    """
+    Ensure that get_random_quote() gives a properly formatted quote
+    """
+    quote = get_random_quote()
+    if quote:
+        body, author = quote
+        print(f'{body} -{author}')
+
 
 def test_get_weather_forecast():
     """
@@ -137,7 +173,29 @@ def test_get_weather_forecast():
                 f' - {period["timestamp"]} | {period["temperature"]} | {period["description"]}')
 
 
+def test_get_wikipedia_article():
+    """
+    Test to see if a random article is given
+    """
+    article = get_wikipedia_article()
+    if article:
+        print(f'{article["Title"]}\n<{article["Link"]}>\n{article["Summary"]}')
+
+
 if __name__ == '__main__':
-    #test_get_weather_forecast()
-    print(get_current_x_trends())
-    
+    print('#####################################################################')
+
+    print('Quote Test')
+    test_get_random_quote()
+
+    print('#####################################################################')
+
+    print('Forecast Test')
+    test_get_weather_forecast()
+
+    print('#####################################################################')
+
+    print('Wikipedia Article Test')
+    test_get_wikipedia_article()
+
+    print('#####################################################################')
