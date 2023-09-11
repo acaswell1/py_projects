@@ -95,7 +95,7 @@ def get_current_x_trends(woeid=23424977):
 
     try:
         _ = tweepy.AppAuthHandler(key, secret)
-        # Elon made the twitter API cost $100 a month so I'm not paying that to run a passion project
+        # Elon made the twitter API cost $100 a month so I'm not paying that
         # return tweepy.API(auth=authentication).get_place_trends(woeid)[0]['trends']
     except TypeError as error:
         print(error)
