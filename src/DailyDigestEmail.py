@@ -30,7 +30,7 @@ class DailyDigestEmail:
         message = EmailMessage()
         message['Subject'] = f'Alec\'s Daily Digest - {datetime.date.today().strftime("%d %b %Y")}'
         message['From'] = self.sender_cerdentials['email']
-        message['To'] = 'aleccaswell@gmail.com'
+        message['To'] = ''.join(self.recipients)
         
         self.format_message()
         message.set_content(self.email['plain'])
