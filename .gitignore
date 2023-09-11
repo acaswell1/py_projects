@@ -1,4 +1,5 @@
+src/__pycache__
+src/Email_pwd.txt
 src/OpWthr_Key.txt
 src/Twitter_Key.txt
 src/Twitter_Key_Secret.txt
-src/__pycache__
